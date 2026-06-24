@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: privateops-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: privateops
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - privateops-network
+
+  redis:
+    image: redis:alpine
+    container_name: privateops-cache
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - privateops-network
+
+  backend:
+    build: ./backend
+    container_name: privateops-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=privateops
+      - DB_PORT=3306
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=super_secret_private_ops_jwt_key
+      - JWT_REFRESH_SECRET=super_secret_private_ops_refresh_jwt_key
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - ./backend/uploads:/usr/src/app/uploads
+    networks:
+      - privateops-network
+
+  frontend:
+    build: ./frontend
+    container_name: privateops-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - privateops-network
+
+volumes:
+  mysql_data:
+
+networks:
+  privateops-network:
+    driver: bridge

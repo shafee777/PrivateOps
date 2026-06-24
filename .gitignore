@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+
+# Environment files (NEVER push secrets to GitHub)
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Uploads (user files - don't push to GitHub)
+backend/uploads/
+
+# AI Model cache (large files, downloaded automatically on first run)
+backend/.cache/
+backend/node_modules/.cache/
+frontend/node_modules/.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+
+# Misc
+*.pem
+*.key
